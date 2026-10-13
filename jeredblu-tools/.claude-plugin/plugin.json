@@ -1,0 +1,10 @@
+{
+  "name": "jeredblu-tools",
+  "description": "Clone-derived review editions of JeredBlu evaluator, PRD and delegation skills.",
+  "version": "2.0.0-review.1",
+  "author": {
+    "name": "Maintainer"
+  },
+  "homepage": "https://az9713.github.io/evaluator-skills/",
+  "repository": "https://github.com/az9713/evaluator-skills"
+}

@@ -1,0 +1,13 @@
+{
+  "name": "evaluator-skills",
+  "owner": {
+    "name": "Maintainer"
+  },
+  "plugins": [
+    {
+      "name": "jeredblu-tools",
+      "source": "./jeredblu-tools",
+      "description": "Reviewed and modified editions of JeredBlu skills with source-backed analysis."
+    }
+  ]
+}

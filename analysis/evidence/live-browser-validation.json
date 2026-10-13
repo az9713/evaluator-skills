@@ -1,0 +1,37 @@
+{
+  "date": "2026-10-12",
+  "url": "https://az9713.github.io/evaluator-skills/",
+  "pages_source": "main:/docs",
+  "github_pages_build": "built",
+  "live_tab_checks": {
+    "tabs": 5,
+    "selected_and_visible": true,
+    "sections_per_tab": 5,
+    "desktop_viewport_width": 1286,
+    "desktop_document_width": 1271,
+    "mobile_viewport_width": 390,
+    "mobile_document_width": 390,
+    "all_tabs_fit_page_width": true
+  },
+  "initial_local_report_links_checked": 25,
+  "all_initial_report_links_http_200": true,
+  "served_zip_content_type": "application/x-zip-compressed",
+  "readme": {
+    "url": "https://github.com/az9713/evaluator-skills",
+    "upstream_attribution_visible": true,
+    "all_five_modification_sections_visible": true,
+    "live_report_links": 14,
+    "preview_image_loaded": true,
+    "preview_image_natural_width": 1440,
+    "iframes": 0
+  },
+  "preview": {
+    "method": "Headless Chrome using an isolated temporary browser profile",
+    "dimensions": [
+      1440,
+      1100
+    ],
+    "pixel_image_inspected": true
+  },
+  "scope": "Public Pages rendering, tab behavior, responsive geometry, served report assets and actual GitHub README rendering. This verifies publication, not live MCP/provider behavior."
+}

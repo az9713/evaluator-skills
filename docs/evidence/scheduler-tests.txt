@@ -1,0 +1,11 @@
+PASS reserve concurrent headroom before calls
+PASS release reservation using actual total usage
+PASS missing usage charges reservation and fails
+PASS adapter breach stops subsequent launch
+PASS failed or missing verification is rejected
+PASS stopped work and wrong output cannot pass
+PASS split and missing research votes stay unresolved
+PASS unknown tiers duplicate IDs and traversal rejected
+PASS invalid budgets rejected before adapter
+PASS calls retries and synthesis reserve bounded
+{"tests":10,"passed":10}

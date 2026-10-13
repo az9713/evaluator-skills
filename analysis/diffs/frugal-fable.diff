@@ -1,0 +1,795 @@
+--- original/frugal-fable/SKILL.md
++++ revised/frugal-fable/SKILL.md
+@@ -1,167 +1,50 @@
+ ---
+ name: frugal-fable
+-description: Use when running on Claude Fable (or any premium model) and the work is token-heavy — building features, multi-file changes, research, testing, debugging, migrations, or anything spanning many files/sources. Keeps Fable on the judgment (decompose, architect, synthesize, review) and delegates bounded, verifiable heavy-lifting to cheaper models (Haiku/Sonnet/Opus) — with a quality floor so construction work is never owned by a weak agent. Triggers on requests to "be efficient with Fable", "don't burn tokens", orchestrate subagents, or delegate work. Also fires on cross-CLI delegation: "delegate to Codex", "use Codex/GPT for this", "second opinion from Codex", or offloading work to a separate Codex/ChatGPT quota.
++description: Plan bounded model delegation with explicit ownership, evidence gates and honest cost limits; use only authorized available agents and runtime capabilities.
++metadata:
++  version: "2.0.0-review.1"
++  edition: "Local review edition; not an upstream release"
+ ---
+ 
+-# Frugal Fable
+ 
+-Fable is expensive because Fable is good. Spend it on judgment, not on scans,
+-boilerplate, and log-reading. Delegate the heavy, repeatable, *verifiable* work
+-to cheaper models — but never let a weak agent own quality-critical construction.
++    # Frugal delegation
++    Keep ambiguous/high-impact decisions, integration and final evidence review with the
++    orchestrator. Delegate only when allowed by user/host policy and independently useful.
++    One small or coupled task stays local. Capability labels are not current model IDs.
++    Discover supported tools/models/effort at runtime; do not change the user's model
++    preference or assume another subscription has free or generous quota.
+ 
+-**The deal:** cheaper agents *gather signal and produce candidate work to files*.
+-Fable *decides, integrates, and reviews*. Truth-judgment and final quality stay
+-with Fable, always.
++    ## Plan
++    Load references/routing-cheatsheet.md. Name objective, owner files, dependencies,
++    constraints, output path, required checks and stopping conditions for each slice.
++    Disjoint writes or isolated worktrees; tell workers they share the workspace and must
++    preserve others' edits. Do not overwrite source from a stale patch.
++    Use a unique run ID under an agreed scratch root; validate returned paths remain inside
++    it. Keep summaries small, full evidence on disk. Scratch files are private and must
++    not be committed/uploaded casually; no automatic gitignore/config edits.
+ 
+-## ⚠️ Turn Ultracode OFF before using this skill
++    ## Costs and execution
++    Load references/budget-and-evidence.md before fan-out. Separate measured total/input/
++    output/cached/reasoning tokens, estimated cost and account quota. Output-only metering
++    cannot enforce total token spend. An input/output multiplier is only an estimate.
++    scripts/scheduler.mjs supplies reservation-before-launch, bounded concurrency/call
++    count, fail-closed accounting and evidence gates. It needs an explicit adapter;
++    it neither calls providers nor promises provider-level budget enforcement.
++    Strict spend limits require a trusted adapter to enforce each inclusive upper bound,
++    report actual total usage including nested calls/retries, and stop/cancel at limits.
++    If that capability is absent, run serial limited work under an advisory estimate,
++    disclose uncertainty, or decline a strict-budget run. Never label it a hard cap.
++    Include orchestration, retrieval, verification, retries and final synthesis in planning.
++    Conflicting cost modes need a clear choice only when conflict is established; don't
++    claim a toggle exists or stop based on an assumed mode.
+ 
+-frugal-fable and **Ultracode are opposites** and must not run together.
+-Ultracode's standing order is *"run a workflow for every task, token cost is not
+-a constraint, be exhaustive, run several workflows in sequence, loop until
+-nothing is left."* frugal-fable's whole purpose is to **conserve**. Run both and
+-you get the worst case: cheap workers fan out, *and then* Fable launches extra
+-exhaustive passes on top — which is exactly how usage gets blown (it has happened).
+-
+-- If Ultracode is on, **say so and stop** — ask the user to toggle it off (`/ultracode` or the toggle by the model selector), then proceed.
+-- This skill is a *guide*, not a hard cap. A guide cannot beat Ultracode's "spend everything" directive. The only thing that truly enforces a ceiling is a **token budget in the workflow** (see Budget discipline). Use it.
+-- After a delegated workflow returns, **do NOT autonomously launch a second "gap-fill" research round.** Read the saved files, synthesize, and stop. Widen scope only if the user asks.
+-
+-## Budget discipline (the real brake)
+-
+-A skill convention biases behavior; it cannot force a spend limit. When the user
+-is on a constrained usage window — or you're running unsupervised — use a
+-workflow with a **hard token cap**, not just routing advice:
+-
+-- For research, use the bundled **`references/frugal-research.js`** workflow (hard caps: 4 angles / 8 fetches / 10 claims / 2 votes, a `budget.remaining()` gate that stops fanning out, synthesis pinned to Sonnet). Run it via the `Workflow` tool with `{scriptPath: "<abs path to references/frugal-research.js>"}`, or copy it to `~/.claude/workflows/frugal-research.js` to invoke by name. (If you also have the community `deep-research-cheap` workflow installed, that's the deeper, uncapped alternative for when you have headroom.)
+-- In any custom `Workflow`, gate fan-out on `budget.remaining()` and keep a reserve for synthesis. See `references/fanout-template.js`.
+-- **Scope is a cost lever.** A 6-lane, 12-question mega-prompt makes even "cheap" workflows expensive (verify fans out per claim). Split huge asks into focused runs, or cap the angles. Tell the user the tradeoff instead of silently fanning out to 100 agents.
+-- "Cheap model" ≠ "cheap run." 75 Sonnet agents at ~27k each is still ~2M tokens. Watch the *count*, not just the per-agent tier.
+-
+-## What stays with Fable (never delegated)
+-
+-- Decomposing ambiguous work into clean, independent slices.
+-- Architecture, product, and safety tradeoffs.
+-- Shared-file coordination and integrating partial work into one coherent whole.
+-- Resolving conflicting subagent reports — deciding what's actually true.
+-- Final review, risk assessment, and user-facing synthesis.
+-
+-## Model routing — decide per slice, at runtime
+-
+-We don't know in advance what we're building, so route each slice when you reach
+-it. Score it on three axes; the highest one sets the **floor** (you may always go
+-higher, never lower):
+-
+-- **Stakes** — ships to prod? architectural? security/correctness-critical? → raises floor
+-- **Reversibility** — one-way door, hard to test, destructive? → raises floor
+-- **Ambiguity** — spec fuzzy, needs real judgment? → raises floor, often stays with Fable
+-
+-| Slice | Owner | Gate before Fable accepts |
+-|---|---|---|
+-| Scans, grep, repo/web inventory, log & test-output reduction, doc summaries | **Haiku** | low-stakes; sanity-check only |
+-| Bounded, well-specified patches; adversarial verification; targeted tests | **Sonnet** | build + relevant tests pass |
+-| Hard refactors, correctness/security-critical code, slices where Sonnet visibly struggles | **Opus** | Fable reviews the diff |
+-| Any tier above, when the user has consented to Codex offload | **Codex** (tier-mapped — see `references/codex-delegation.md`) | same gate as the Claude tier it replaces |
+-| Decompose, architect, coordinate, integrate, final review | **Fable** | — |
+-
+-**Conservative build floor (this project's default):** cheap models do mechanical
+-work and bounded patches that come with passing tests. Anything architectural,
+-high-stakes, or one-way stays with **Opus or Fable**. When unsure which tier, go
+-up one — a re-run on a cheap model that wasn't good enough costs more than starting
+-at the right tier.
+-
+-## The second pool (Codex) — cross-CLI offload
+-
+-If the machine also has OpenAI's Codex CLI, its models run on a **separate
+-subscription quota** — slices routed there consume no Claude usage at all.
+-
+-- **Consent gate — never assume.** The first time Codex routing would help,
+-  check `codex --version`. Present → ask the user: "Codex is available — want
+-  me to offload [named slices] to it? It won't touch your Claude usage."
+-  Not installed → don't mention Codex at all. Declined → stay on Claude
+-  models for the rest of the session without re-asking. Running unsupervised
+-  (user away, can't answer)? Don't block — proceed on Claude models and
+-  surface the Codex offer in your final summary for next time.
+-- **Generous-quota routing.** Codex subscription limits are looser, so the
+-  second pool inverts the penny-pinching: default to its construction tier
+-  and escalate to its frontier tier freely for hard slices — never let a
+-  weak model own work to save quota that's ample.
+-- Tier map, exact `codex exec` recipes, sandbox rules, and gotchas:
+-  `references/codex-delegation.md` — read it before the first Codex call.
+-
+-## The context firewall (this is the main token saver)
+-
+-The thing that nukes Fable's budget is subagent output landing *in Fable's
+-context*. So don't return it there.
+-
+-- Delegated agents **write findings/patches/logs to a scratch dir**
+-  (`.frugal-fable/<task>/` in the repo, gitignored) and **return only**:
+-  `path` + a 3-line summary + a confidence level.
+-- Fable reads a file **on demand** — only the ones that matter, only at the moment
+-  it needs them (usually synthesis/review). Not all of them, not up front.
+-- For research specifically, prefer tools that already write to file over ones that
+-  dump into context (the Bright Data skills do this — see Research lane).
+-
+-This keeps Fable's working set small even across dozens of subagents.
+-
+-## Handoff packets
+-
+-Write every delegated prompt as if the agent has zero chat context. Include only:
+-
+-- Exact objective + the repo path.
+-- In-scope files/surfaces, and what's explicitly **out of scope**.
+-- **Where to write output** (the scratch path) and **what to return** (path + summary + confidence — *not* the full content).
+-- Verification commands / browser flows to run, and what success looks like.
+-- **Stop conditions:** if code doesn't match the prompt, a command fails after one
+-  retry, or the task needs out-of-scope files — stop and report, don't improvise.
+-
+-## Choosing the harness — not every task needs a workflow
+-
+-- **1 slice, or tightly coupled / interactive** → Fable does it directly. No delegation; coordination cost would exceed savings.
+-- **A few independent slices** → inline `Agent` calls (set the model per the table).
+-- **Many independent slices / heavy fan-out** → author a `Workflow` (agents run *outside* Fable's context — cheapest). Adapt `references/fanout-template.js`.
+-- **Research** → use `frugal-research` (hard budget cap) when usage is constrained or you're unsupervised; `deep-research-cheap` when you have headroom and want maximum depth. Don't rebuild either.
+-
+-## Lanes (soft defaults, not rigid rules)
+-
+-- **Build/execute:** Fable plans + owns shared files, integration, and final review.
+-  Cheaper agents produce *candidate* bounded patches to the scratch dir with passing
+-  tests. **Quality gate:** no patch is accepted until it passes the verification its
+-  stakes demand (build, targeted tests, or Fable diff-review for high-stakes). Fable
+-  integrates and reviews — it never rubber-stamps a delegated diff.
+-- **Research:** delegate to `deep-research-cheap` (Haiku collects via `bdata` + WebSearch,
+-  Sonnet verifies adversarially, Fable synthesizes). For one-off lookups, a single Haiku
+-  agent with `bdata search`/`bdata scrape` writing to a scratch file. Prefer `bdata` over
+-  built-in web tools — broader reach, fewer blocks, and the bdata skills output to file.
+-- **Testing:** Fable names the validation direction and which checks matter. Lighter agents
+-  run targeted tests, browser flows, screenshots, and log reduction; report exact commands,
+-  failures, likely cause, and whether failures look real / flaky / environmental.
+-- **Debugging:** cheaper agents cluster logs, reproduce, and try small fixes to files; Fable
+-  decides which diagnosis is trustworthy and owns the real fix.
+-
+-If a task is tiny, or the validation itself needs delicate judgment, keep it with Fable.
+-
+-## Vetting delegated work
+-
+-Treat subagent reports as **leads, not facts**. Before relying on a high-impact
+-finding, opening a PR, or telling the user it's done: reopen the cited file(s),
+-confirm the line refs / failures, and review the final diff against the task.
+-Let lighter agents gather signal; keep truth-judgment with Fable.
+-
+-## References
+-
+-- `references/frugal-research.js` — budget-capped research `Workflow` (Haiku collect → Sonnet
+-  verify → Sonnet synthesize, hard caps + token gate). Run via the `Workflow` tool with
+-  `{scriptPath}`, or copy to `~/.claude/workflows/` to invoke by name. Requires a Fable-class
+-  runtime that exposes the `Workflow` tool.
+-- `references/fanout-template.js` — adaptable `Workflow` script for the general fan-out case
+-  (route by model, verify, synthesize). Copy and adapt per task; don't run blind.
+-- `references/routing-cheatsheet.md` — one-screen version of the routing table + firewall
+-  protocol for quick recall mid-task.
+-
+-## Credits
+-
+-Adapted from BuilderIO's `efficient-fable` skill, extended here with explicit model tiers, a
+-conservative build-quality floor, the file-based context firewall, harness selection, and a
+-budget-capped research workflow (`frugal-research.js`). Lanes: research, build/dev, testing,
+-debugging. As with all delegation, the orchestrator verifies delegated work before relying on
+-it — see **Vetting delegated work** above. That review step is the point, not an afterthought.
++    ## Integrate
++    Missing verification, failed checks, stopped workers or unavailable evidence are not
++    accepted work. High-stakes verification needs the same capability floor as construction.
++    Reopen cited evidence and relevant diff. Research votes may be correlated: two replies
++    are not two independent sources. Agreement is a lead, split votes are disputed, no
++    usable evidence is unknown; don't rename surviving claims "confirmed".
++    Continue essential work within agreed scope/reserve; seek scope changes only when needed.
++    Report completed/skipped/failed slices, evidence, actual or estimated costs and unresolved
++    issues. Local mechanics tests cannot establish model quality or economic savings.
++    For external CLI delegation read references/codex-delegation.md.
+--- original/frugal-fable/references/budget-and-evidence.md
++++ revised/frugal-fable/references/budget-and-evidence.md
+@@ -0,0 +1,20 @@
++# Budget and evidence contract
++A reservation is the inclusive upper bound for one adapter call, including input,
++output, cached/reasoning accounting, tool reads, nested model calls and retries.
++The provider/runtime must enforce it for a true ceiling. The scheduler can detect a
++breached contract after spending, but cannot undo a provider charge.
++No parallel launch can reuse reserved headroom. Release only after actual usage is
++returned. Missing usage fails closed by charging the whole reservation.
++Failed calls count and consume their reservation conservatively; no automatic retry.
++Reserve final synthesis explicitly; execute it as a separate accounted task.
++Reject invalid/negative/NaN budgets, duplicate task IDs, unsafe paths and unknown tiers.
++Record pending/running/completed/skipped/rejected/failed and why; exceptions are not nulls.
++Evidence checks require a named artifact and verified acceptance. High-stakes review
++cannot be missing. Reported passing tests still need the orchestrator to inspect evidence.
++Research consensus records supporting, refuting, unknown and missing votes separately;
++correlated votes do not increase independent-source count.
++
++
++Outputs distinguish measuredTotalTokens, estimatedChargedTokens, accountedTokens
++(their conservative sum), and accountingComplete. Missing usage/failed-call charges
++are estimates, never reported as measured provider usage.
+--- original/frugal-fable/references/codex-delegation.md
++++ revised/frugal-fable/references/codex-delegation.md
+@@ -1,93 +1,14 @@
+-# Codex delegation — cross-CLI recipes (the second pool)
+-
+-Read this before the first `codex exec` of a session. Everything in SKILL.md
+-still applies — handoff packets, context firewall, vetting. This file adds
+-only the Codex-specific mechanics.
+-
+-The consent gate lives in SKILL.md — it must be satisfied (Codex present,
+-user said yes, slices named) before any `codex exec`.
+-
+-## Current model mappings (as of 2026-07 — the ONLY place model IDs live)
+-
+-| Role (SKILL.md routing) | Codex model | Use for |
+-|---|---|---|
+-| Scan tier (≈Haiku) | `gpt-5.6-luna` | genuine volume reads only |
+-| Construction tier (≈Sonnet) | `gpt-5.6-terra` | **default** — bounded patches, targeted tests |
+-| Frontier tier (≈Opus+) | `gpt-5.6-sol` | hard slices, adversarial review, PR review |
+-
+-Effort dial: `-c model_reasoning_effort=` one of
+-`low | medium | high | xhigh | max` (`max` verified on codex-cli 0.144.1).
+-
+-**Generous-quota bias:** Codex subscription limits are looser than Claude's.
+-Default Terra at `high`; escalate to Sol `xhigh` freely for anything hard.
+-When models churn, update this table only — no prose elsewhere names a model.
+-
+-## Recipes (exact — flags before the prompt, do not improvise)
+-
+-Build slice (write-capable, sandboxed to the repo):
+-
+-```bash
+-codex exec -s workspace-write -C <repo> \
+-  -m gpt-5.6-terra -c model_reasoning_effort=high \
+-  -c 'notify=[]' \
+-  -o .frugal-fable/<task>/codex-report.md \
+-  "<handoff packet>" </dev/null
+-```
+-
+-Adversarial review / second opinion (read-only, structured verdict):
+-
+-```bash
+-codex exec -s read-only -C <repo> \
+-  -m gpt-5.6-sol -c model_reasoning_effort=xhigh \
+-  -c 'notify=[]' \
+-  --output-schema <verdict-schema.json> \
+-  -o .frugal-fable/<task>/codex-verdict.json \
+-  "<review packet>" </dev/null
+-```
+-
+-Repo/PR review (runs against the current repo — `cd` there first;
+-pick ONE scope flag: `--base <branch>` | `--uncommitted` | `--commit <sha>`):
+-
+-```bash
+-cd <repo> && codex exec review --base main \
+-  -m gpt-5.6-sol -c 'notify=[]' \
+-  -o .frugal-fable/<task>/codex-review.md \
+-  "<focus instructions>" </dev/null
+-```
+-
+-Amendments — same session, synchronous (never a detached wrapper).
+-Resume does NOT keep the original run's flags: it reverts to
+-`~/.codex/config.toml` defaults (verified: a `workspace-write` run resumed as
+-`danger-full-access`). Re-pin sandbox via `-c` (resume has no `-s`):
+-
+-```bash
+-codex exec resume --last -c 'sandbox_mode="workspace-write"' \
+-  -c 'notify=[]' \
+-  -o .frugal-fable/<task>/amend-report.md \
+-  "<amendment packet>" </dev/null
+-```
+-
+-Prefer capturing the session id from the first run's output and using
+-`codex exec resume <session-id> ...` when multiple Codex workers ran.
+-
+-## Firewall + coordination
+-
+-- `-o` writes Codex's final message to the scratch dir — that file, not
+-  stdout, is the report. Read it on demand like any subagent report.
+-- **Disjoint file ownership** per concurrent worker (Codex or Claude); the
+-  orchestrator commits serially on return.
+-
+-## Gotchas
+-
+-- Runs inherit `~/.codex/config.toml` (often `danger-full-access` +
+-  `approval=never`). Always pass `-s` explicitly; `read-only` for reviews.
+-- Everything in the prompt position is task text — a stray `--help` there
+-  becomes a live Codex run. Flags go before the prompt string.
+-- `</dev/null` is load-bearing: an open stdin is appended to the prompt and
+-  can stall the run. `-c 'notify=[]'` keeps delegated workers from firing the
+-  user's turn-end notify hook on every completion.
+-- If the user will use this lane often, suggest allowlisting `codex exec` as
+-  a Bash prefix in `.claude/settings.json` to avoid permission prompts.
+-- The `openai-codex` Claude Code plugin's wrapper detaches runs and drops
+-  follow-up messages (observed 2026-07-15) — never orchestrate through it;
+-  call `codex exec` directly.
++# External Codex lane (optional)
++Confirm runtime availability with codex --version and read codex exec --help locally
++before choosing flags. Model IDs, effort and resume semantics vary by installed version.
++Existing explicit user authorization for named slices persists; do not re-ask.
++A separate account/provider changes the data-processing boundary: disclose what files
++and context leave the current harness, and use it only within authorized scope.
++Read-only review gets read-only permissions; writing gets the narrowest supported scope.
++Do not broaden sandbox/config/allowlists to avoid prompts.
++Capture the exact session ID, exit status, final artifact path and observed permissions.
++Resume that ID rather than --last when other work can run. Reconfirm effective
++permissions using the installed CLI contract; never assume defaults carry over.
++Use structured arguments/prompt files and native shell syntax. In PowerShell use
++quoted absolute paths and its process/stdin APIs; /dev/null recipes are POSIX only.
++No live cross-provider delegation was performed to validate this local edition.
+--- original/frugal-fable/references/fanout-template.js
++++ revised/frugal-fable/references/fanout-template.js
+@@ -1,127 +0,0 @@
+-export const meta = {
+-  name: 'frugal-fable-fanout',
+-  description: 'Frugal Fable fan-out template: route independent slices to the cheapest sufficient model, verify, synthesize. COPY AND ADAPT per task — do not run blind.',
+-  phases: [
+-    { title: 'Work', detail: 'one agent per slice, model chosen by slice.tier, writes to scratch file' },
+-    { title: 'Verify', detail: 'Sonnet adversarial pass on high-stakes slices only' },
+-    { title: 'Synthesize', detail: 'Fable (session model) integrates from files on demand' },
+-  ],
+-}
+-
+-// ── How to use ──────────────────────────────────────────────────────────────
+-// Pass `args` as an array of slice specs. Fable (the orchestrator) fills these
+-// in after decomposing the task — that decomposition is the part worth Fable's
+-// tokens; this script just executes the fan-out cheaply.
+-//
+-//   args = [
+-//     { id: 'scan-auth',  tier: 'haiku',  highStakes: false,
+-//       prompt: 'Inventory every call site of `authToken` ...',
+-//       scratch: '.frugal-fable/scan-auth/findings.md' },
+-//     { id: 'patch-login', tier: 'sonnet', highStakes: true,
+-//       prompt: 'Apply this bounded change to src/login.ts ... run `npm test -- login`.',
+-//       scratch: '.frugal-fable/patch-login/report.md' },
+-//     ...
+-//   ]
+-//
+-// Each slice's `tier` comes from the routing table (haiku | sonnet | opus).
+-// Score stakes/reversibility/ambiguity → highest sets the floor. When unsure,
+-// go up one tier. Keep architectural/one-way slices OUT of this fan-out — Fable
+-// owns those directly.
+-// ─────────────────────────────────────────────────────────────────────────────
+-
+-const slices = Array.isArray(args) ? args : []
+-if (slices.length === 0) {
+-  return { error: 'No slices passed. args must be an array of { id, tier, highStakes, prompt, scratch }.' }
+-}
+-
+-const RESULT_SCHEMA = {
+-  type: 'object',
+-  required: ['path', 'summary', 'confidence'],
+-  properties: {
+-    path: { type: 'string', description: 'scratch file the agent wrote (NOT the full content)' },
+-    summary: { type: 'string', description: '<=3 lines: what was done / found' },
+-    confidence: { enum: ['high', 'medium', 'low'] },
+-    verifyPassed: { type: 'boolean', description: 'did the required build/tests pass?' },
+-    stoppedShort: { type: 'boolean', description: 'true if a stop condition was hit' },
+-  },
+-}
+-const VERDICT_SCHEMA = {
+-  type: 'object',
+-  required: ['sound', 'evidence'],
+-  properties: {
+-    sound: { type: 'boolean' },
+-    evidence: { type: 'string' },
+-    confidence: { enum: ['high', 'medium', 'low'] },
+-  },
+-}
+-
+-const tierToModel = t => (t === 'opus' ? 'opus' : t === 'sonnet' ? 'sonnet' : 'haiku')
+-
+-const workPrompt = s =>
+-  '## Frugal Fable worker: ' + s.id + '\n\n' +
+-  s.prompt + '\n\n' +
+-  '## Output protocol (MANDATORY)\n' +
+-  '1. Write your full findings / patch / logs to: `' + s.scratch + '` (create dirs as needed).\n' +
+-  '2. Return ONLY: the path, a <=3-line summary, and your confidence. Do NOT paste the full content back.\n' +
+-  '3. If your slice requires a build/test, run it and set verifyPassed accordingly.\n' +
+-  '4. Stop conditions: if the code does not match this prompt, a command fails after one retry, or you need\n' +
+-  '   out-of-scope files — stop, set stoppedShort=true, and report what blocked you. Do not improvise.\n\n' +
+-  'Structured output only.'
+-
+-// ── Work + verify, pipelined (no barrier): each slice verifies as soon as it's done ──
+-phase('Work')
+-const done = await pipeline(
+-  slices,
+-
+-  s => agent(workPrompt(s), {
+-    label: 'work:' + s.id,
+-    phase: 'Work',
+-    model: tierToModel(s.tier),
+-    schema: RESULT_SCHEMA,
+-  }).then(r => (r ? { ...s, result: r } : null)),
+-
+-  item => {
+-    if (!item) return null
+-    // Only high-stakes slices pay for an adversarial verify pass.
+-    if (!item.highStakes) return item
+-    return agent(
+-      '## Adversarial verifier for slice: ' + item.id + '\n\n' +
+-      'A worker reported: "' + item.result.summary + '" (confidence ' + item.result.confidence + ').\n' +
+-      'Its output is at `' + item.result.path + '`. Read it.\n\n' +
+-      'Be skeptical. Does the file actually accomplish the slice objective below, with evidence?\n' +
+-      'Check the diff/claims against the stated scope. If it touched out-of-scope files, overreached,\n' +
+-      'or its tests do not actually cover the change, set sound=false.\n\n' +
+-      '## Slice objective\n' + item.prompt + '\n\nStructured output only.',
+-      { label: 'verify:' + item.id, phase: 'Verify', model: 'sonnet', schema: VERDICT_SCHEMA }
+-    ).then(v => ({ ...item, verdict: v }))
+-  }
+-)
+-
+-const results = done.filter(Boolean)
+-const flagged = results.filter(r => r.verdict && !r.verdict.sound)
+-const stopped = results.filter(r => r.result.stoppedShort)
+-log(results.length + ' slices done · ' + flagged.length + ' flagged by verify · ' + stopped.length + ' stopped short')
+-
+-// ── Synthesize: inherits the session model (Fable). This is the call worth full quality. ──
+-// Fable reads the scratch files ON DEMAND — the manifest below carries only paths+summaries,
+-// keeping the context firewall intact. Pull a file in only when integrating it.
+-phase('Synthesize')
+-const manifest = results.map(r =>
+-  '- [' + r.id + '] tier=' + r.tier +
+-  ' · confidence=' + r.result.confidence +
+-  (r.verdict ? ' · verify=' + (r.verdict.sound ? 'sound' : 'FLAGGED: ' + r.verdict.evidence) : '') +
+-  (r.result.stoppedShort ? ' · STOPPED SHORT' : '') +
+-  '\n  file: ' + r.result.path +
+-  '\n  summary: ' + r.result.summary
+-).join('\n')
+-
+-return {
+-  task: 'frugal-fable fan-out',
+-  sliceCount: slices.length,
+-  completed: results.length,
+-  flagged: flagged.map(r => ({ id: r.id, why: r.verdict.evidence, file: r.result.path })),
+-  stoppedShort: stopped.map(r => ({ id: r.id, file: r.result.path })),
+-  manifest,
+-  next: 'Fable: read flagged + high-stakes files from the manifest, integrate, run final review. ' +
+-        'Do NOT trust summaries for high-impact decisions — reopen the file.',
+-}
+--- original/frugal-fable/references/frugal-research.js
++++ revised/frugal-fable/references/frugal-research.js
+@@ -1,194 +0,0 @@
+-export const meta = {
+-  name: 'frugal-research',
+-  description: 'Hard-budget-capped deep research. Same Haiku-collect → Sonnet-verify → synthesize shape as deep-research-cheap, but with absolute caps (4 angles / 8 fetches / 10 claims / 2 votes) and a token-budget gate that STOPS fanning out before it can blow your usage. Synthesis pinned to Sonnet so it never silently spends premium tokens. Use when you must not exceed a usage limit.',
+-  whenToUse: 'When you want deep research but on a hard token budget — e.g. constrained usage window, or running under no supervision. Pass the question as args (a string), or { question, capTokens } where capTokens is a TOTAL-token budget (default 1.2M; a focused run lands ~0.9-1M). Pass args as a real JSON object, not a stringified one.',
+-  phases: [
+-    { title: 'Scope', detail: 'decompose into <=4 angles' },
+-    { title: 'Search', detail: 'Haiku, one per angle, bdata + WebSearch' },
+-    { title: 'Fetch', detail: 'Haiku, <=8 sources, extract claims to context only as summaries' },
+-    { title: 'Verify', detail: 'Sonnet, <=10 claims x 2 votes, budget-gated' },
+-    { title: 'Synthesize', detail: 'Sonnet (pinned) — cheap, never Fable' },
+-  ],
+-}
+-
+-// ─── HARD CAPS — the PRIMARY brake. These bound how many pages get read, which is the real
+-// cost driver (input tokens). Do not raise them to "be thorough"; that's what blew usage. ───
+-const MAX_ANGLES = 4
+-const MAX_FETCH = 8
+-const MAX_VERIFY_CLAIMS = 10
+-const VOTES_PER_CLAIM = 2
+-const REFUTATIONS_REQUIRED = 2          // both voters must refute to kill (lenient survival, cheap)
+-
+-// ─── Budget gate — the SECONDARY brake, and a subtle one. ───
+-// budget.spent() counts OUTPUT tokens only. Empirically, TOTAL tokens (the thing your usage
+-// limit actually meters) run ~8-12x output, because reading web pages is input-heavy. So we
+-// treat capTokens as a TOTAL budget and convert to an output ceiling via IO_RATIO. A run that
+-// reports ~85k output ≈ ~900k total. Default 1.2M total ≈ ~120k output.
+-const DEFAULT_CAP_TOTAL = 1_200_000
+-const IO_RATIO = 10                     // total ≈ IO_RATIO * output (observed); override via args.ioRatio
+-const RESERVE_FRAC = 0.1                // keep 10% of the output ceiling in reserve for synthesis
+-
+-// args may be: a bare question string, a JSON string of {question,...}, or a real object.
+-let A = args
+-if (typeof args === 'string') {
+-  const s = args.trim()
+-  A = s.startsWith('{') ? (() => { try { return JSON.parse(s) } catch { return { question: s } } })() : { question: s }
+-}
+-const Q = (A && typeof A.question === 'string' ? A.question : '').trim()
+-if (!Q) return { error: 'No question. Pass args as a question string or { question, capTokens? }.' }
+-const capTotal = (A && Number(A.capTokens)) || DEFAULT_CAP_TOTAL
+-const ioRatio = (A && Number(A.ioRatio)) || IO_RATIO
+-
+-// Output ceiling = capTotal/ioRatio, also never exceeding any +Nk output target the user set.
+-const outCeiling = budget.total ? Math.min(capTotal / ioRatio, budget.total) : capTotal / ioRatio
+-const reserve = outCeiling * RESERVE_FRAC
+-const headroom = () => outCeiling - budget.spent()
+-const canAfford = (perAgentOut) => headroom() - reserve > perAgentOut
+-log('Budget: ~' + Math.round(capTotal / 1000) + 'k total token cap (≈' + Math.round(outCeiling / 1000) + 'k output, ' + ioRatio + 'x assumed)')
+-
+-const SCOPE_SCHEMA = { type: 'object', required: ['angles'], properties: {
+-  angles: { type: 'array', minItems: 2, maxItems: MAX_ANGLES, items: {
+-    type: 'object', required: ['label', 'query'],
+-    properties: { label: { type: 'string' }, query: { type: 'string' }, rationale: { type: 'string' } } } } } }
+-const SEARCH_SCHEMA = { type: 'object', required: ['results'], properties: {
+-  results: { type: 'array', maxItems: 5, items: {
+-    type: 'object', required: ['url', 'title', 'relevance'],
+-    properties: { url: { type: 'string' }, title: { type: 'string' }, snippet: { type: 'string' },
+-      relevance: { enum: ['high', 'medium', 'low'] } } } } } }
+-const EXTRACT_SCHEMA = { type: 'object', required: ['claims', 'sourceQuality'], properties: {
+-  sourceQuality: { enum: ['primary', 'secondary', 'blog', 'forum', 'unreliable'] },
+-  scratchFile: { type: 'string' },
+-  claims: { type: 'array', maxItems: 4, items: {
+-    type: 'object', required: ['claim', 'quote', 'importance'],
+-    properties: { claim: { type: 'string' }, quote: { type: 'string' },
+-      importance: { enum: ['central', 'supporting', 'tangential'] } } } } } }
+-const VERDICT_SCHEMA = { type: 'object', required: ['refuted', 'evidence'], properties: {
+-  refuted: { type: 'boolean' }, evidence: { type: 'string' }, confidence: { enum: ['high', 'medium', 'low'] } } }
+-const REPORT_SCHEMA = { type: 'object', required: ['summary', 'findings', 'caveats'], properties: {
+-  summary: { type: 'string' },
+-  findings: { type: 'array', items: { type: 'object', required: ['claim', 'confidence', 'sources'],
+-    properties: { claim: { type: 'string' }, confidence: { enum: ['high', 'medium', 'low'] },
+-      sources: { type: 'array', items: { type: 'string' } }, evidence: { type: 'string' } } } },
+-  caveats: { type: 'string' }, openQuestions: { type: 'array', items: { type: 'string' } } } }
+-
+-const slug = Q.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40).replace(/-+$/, '')
+-const SCRATCH = './.frugal-fable/' + (slug || 'research')
+-
+-// ─── Scope ───
+-phase('Scope')
+-const scope = await agent(
+-  'Decompose this research question into at most ' + MAX_ANGLES + ' complementary web-search angles. ' +
+-  'Be economical — pick the angles with the highest signal, do not pad to the max.\n\n## Question\n' + Q +
+-  '\n\nReturn the angles. Structured output only.',
+-  { label: 'scope', schema: SCOPE_SCHEMA, model: 'haiku' }
+-)
+-if (!scope) return { error: 'Scope failed.' }
+-const angles = scope.angles.slice(0, MAX_ANGLES)
+-log('Angles: ' + angles.map(a => a.label).join(', '))
+-
+-// ─── dedup + fetch-slot state ───
+-const normURL = u => { try { const p = new URL(u); return (p.hostname.replace(/^www\./, '') + p.pathname.replace(/\/$/, '')).toLowerCase() } catch { return u.toLowerCase() } }
+-const seen = new Set()
+-const relRank = { high: 0, medium: 1, low: 2 }
+-let fetchSlots = MAX_FETCH
+-
+-const SEARCH_PROMPT = a =>
+-  '## Web searcher: ' + a.label + '\nQuestion: "' + Q + '"\nAngle: ' + (a.rationale || '') + '\nQuery: `' + a.query + '`\n\n' +
+-  'PREFER the Bright Data CLI: run `bdata search "<query>" --json` via Bash FIRST (broader reach, fewer blocks). ' +
+-  'ALSO run WebSearch and merge both result sets. If `bdata` is missing or errors, fall back to WebSearch alone. ' +
+-  'Return the top 3-5 results most relevant to the ORIGINAL question. Skip SEO spam. Structured output only.'
+-
+-const FETCH_PROMPT = (s, ang) =>
+-  '## Source extractor\nQuestion: "' + Q + '"\nURL: ' + s.url + '\nTitle: ' + s.title + '\nVia: ' + ang + '\n\n' +
+-  '1. Fetch the page: PREFER `bdata scrape "<url>" --format markdown` via Bash (Bright Data Web Unlocker — handles blocks/paywalls). If `bdata` is missing or errors, use WebFetch instead.\n' +
+-  '2. Write the full extracted notes to a file under `' + SCRATCH + '/` — that path is RELATIVE TO THE CURRENT WORKING DIRECTORY (the repo root); do not write under $HOME. mkdir -p it first. Return the path as scratchFile (CONTEXT FIREWALL — do not paste the full page back).\n' +
+-  '3. Return 2-4 FALSIFIABLE claims (each with a direct quote + central/supporting/tangential) and the source quality.\n' +
+-  'If both fetch methods fail or the page is irrelevant, return claims: [] and sourceQuality: "unreliable". Structured output only.'
+-
+-const VERIFY_PROMPT = (c, v) =>
+-  '## Adversarial verifier (voter ' + (v + 1) + '/' + VOTES_PER_CLAIM + ')\nBe skeptical — try to REFUTE.\n\n' +
+-  'Question: ' + Q + '\nClaim: "' + c.claim + '"\nSource: ' + c.sourceUrl + ' (' + c.sourceQuality + ')\nQuote: "' + c.quote + '"\n\n' +
+-  'WebSearch (or bdata) for contradicting evidence. refuted=true if unsupported by the quote / contradicted / ' +
+-  'low-quality source for a strong claim / outdated / marketing. Default to refuted=true if uncertain. Structured output only.'
+-
+-// ─── Search → dedup → fetch (pipelined, budget-gated) ───
+-phase('Search')
+-const fetched = await pipeline(
+-  angles,
+-  a => {
+-    if (!canAfford(6_000)) { log('budget gate: skipping search ' + a.label); return null }
+-    return agent(SEARCH_PROMPT(a), { label: 'search:' + a.label, phase: 'Search', schema: SEARCH_SCHEMA, model: 'haiku' })
+-      .then(r => r ? { angle: a.label, results: r.results } : null)
+-  },
+-  sr => {
+-    if (!sr) return null
+-    const novel = [...sr.results].sort((x, y) => relRank[x.relevance] - relRank[y.relevance]).filter(r => {
+-      const k = normURL(r.url)
+-      if (seen.has(k) || fetchSlots <= 0) return false
+-      seen.add(k); fetchSlots--; return true
+-    })
+-    return parallel(novel.map(s => () => {
+-      if (!canAfford(8_000)) { log('budget gate: skipping fetch ' + s.url); return null }
+-      let host = 'src'; try { host = new URL(s.url).hostname.replace(/^www\./, '') } catch {}
+-      return agent(FETCH_PROMPT(s, sr.angle), { label: 'fetch:' + host, phase: 'Fetch', schema: EXTRACT_SCHEMA, model: 'haiku' })
+-        .then(e => e ? { url: s.url, angle: sr.angle, sourceQuality: e.sourceQuality, scratchFile: e.scratchFile,
+-          claims: e.claims.map(c => ({ ...c, sourceUrl: s.url, sourceQuality: e.sourceQuality })) } : null)
+-        .catch(() => null)
+-    }))
+-  }
+-)
+-
+-const sources = fetched.flat().filter(Boolean)
+-const impRank = { central: 0, supporting: 1, tangential: 2 }
+-const qualRank = { primary: 0, secondary: 1, blog: 2, forum: 3, unreliable: 4 }
+-const claims = sources.flatMap(s => s.claims)
+-  .sort((a, b) => (impRank[a.importance] - impRank[b.importance]) || (qualRank[a.sourceQuality] - qualRank[b.sourceQuality]))
+-  .slice(0, MAX_VERIFY_CLAIMS)
+-log('Fetched ' + sources.length + ' sources → verifying top ' + claims.length + ' claims · spent so far ' + Math.round(budget.spent() / 1000) + 'k')
+-
+-// ─── Verify (budget-gated per claim) ───
+-phase('Verify')
+-const voted = (await parallel(claims.map(c => () => {
+-  if (!canAfford(VOTES_PER_CLAIM * 5_000)) { log('budget gate: skipping verify of "' + c.claim.slice(0, 40) + '"'); return null }
+-  return parallel(Array.from({ length: VOTES_PER_CLAIM }, (_, v) => () =>
+-    agent(VERIFY_PROMPT(c, v), { label: 'v' + v, phase: 'Verify', schema: VERDICT_SCHEMA, model: 'sonnet' })
+-  )).then(vs => {
+-    const valid = vs.filter(Boolean)
+-    const refuted = valid.filter(x => x.refuted).length
+-    const survives = valid.length >= REFUTATIONS_REQUIRED && refuted < REFUTATIONS_REQUIRED
+-    log('"' + c.claim.slice(0, 45) + '": ' + (valid.length - refuted) + '-' + refuted + (survives ? ' ✓' : ' ✗'))
+-    return { ...c, refutedVotes: refuted, survives }
+-  })
+-}))).filter(Boolean)
+-
+-const confirmed = voted.filter(c => c.survives)
+-const killed = voted.filter(c => !c.survives)
+-log('Verified ' + voted.length + ' → ' + confirmed.length + ' confirmed, ' + killed.length + ' killed')
+-
+-// ─── Synthesize — PINNED to Sonnet (never inherits Fable; that's the cost guarantee) ───
+-phase('Synthesize')
+-const block = confirmed.map((c, i) => '### [' + i + '] ' + c.claim + '\nVote ' + (VOTES_PER_CLAIM - c.refutedVotes) + '-' + c.refutedVotes +
+-  ' · ' + c.sourceUrl + ' (' + c.sourceQuality + ')\nQuote: "' + c.quote + '"').join('\n\n')
+-
+-const report = confirmed.length === 0 ? null : await agent(
+-  '## Synthesis\nQuestion: ' + Q + '\n\n' + confirmed.length + ' claims survived ' + VOTES_PER_CLAIM +
+-  '-vote verification. Merge duplicates, group into findings that answer the question, assign confidence, ' +
+-  'write a 3-5 sentence summary, list caveats + open questions.\n\n## Confirmed\n' + block + '\n\nStructured output only.',
+-  { label: 'synthesize', schema: REPORT_SCHEMA, model: 'sonnet' }
+-)
+-
+-return {
+-  question: Q,
+-  ...(report || { summary: confirmed.length ? 'Synthesis skipped.' : 'No claims survived verification.', findings: [], caveats: '' }),
+-  scratchDir: SCRATCH,
+-  refuted: killed.map(c => ({ claim: c.claim, source: c.sourceUrl })),
+-  sources: sources.map(s => ({ url: s.url, quality: s.sourceQuality, file: s.scratchFile })),
+-  stats: {
+-    angles: angles.length, sources: sources.length, claimsVerified: voted.length,
+-    confirmed: confirmed.length, killed: killed.length,
+-    outputTokensSpent: budget.spent(),
+-    estimatedTotalTokens: budget.spent() * ioRatio,   // the figure that maps to your usage meter
+-    capTotalTokens: capTotal, outputCeiling: Math.round(outCeiling),
+-    hitBudgetGate: headroom() <= reserve,
+-  },
+-}
+--- original/frugal-fable/references/routing-cheatsheet.md
++++ revised/frugal-fable/references/routing-cheatsheet.md
+@@ -1,35 +1,9 @@
+-# Frugal Fable — mid-task cheatsheet
+-
+-## Route each slice (highest axis sets the floor; go up, never down)
+-
+-- Stakes ↑ (ships / architectural / security) · Reversibility ↑ (one-way / hard to test) · Ambiguity ↑ (needs judgment → Fable)
+-
+-| Slice | Model |
+-|---|---|
+-| scan / grep / inventory / log + test-output reduction / doc summary | Haiku |
+-| bounded patch (well-specified) / adversarial verify / targeted tests | Sonnet (build+tests must pass) |
+-| hard refactor / correctness- or security-critical / Sonnet struggled | Opus (Fable reviews diff) |
+-| decompose / architect / coordinate shared files / integrate / final review | Fable (never delegate) |
+-
+-Conservative floor: architectural/high-stakes/one-way → Opus or Fable only. Unsure → go up one tier.
+-
+-## Context firewall
+-
+-Delegated agent writes to `.frugal-fable/<task>/` and returns ONLY: `path + 3-line summary + confidence`.
+-Fable reads files on demand at synthesis/review — never pulls all output into context up front.
+-
+-## Harness
+-
+-1 slice / coupled / interactive → Fable direct. Few independent → inline `Agent`. Many independent → `Workflow` (out-of-context). Research → `deep-research-cheap` as-is.
+-
+-## Handoff packet (every delegation)
+-
+-objective + repo path · in-scope / out-of-scope · where to write + what to return (path+summary+confidence, not full content) · verification commands + success criteria · stop conditions (mismatch / failed retry / needs out-of-scope → stop & report).
+-
+-## Quality gate
+-
+-No delegated patch accepted until it passes the verification its stakes demand. Fable integrates + reviews the diff. Reports are leads, not facts — reopen cited files before relying on high-impact findings.
+-
+-## Research tooling
+-
+-`bdata search` / `bdata scrape` / bdata data-feeds over built-in web tools (broader reach, fewer blocks, writes to file). Fall back to WebSearch/WebFetch.
++# Routing by capabilities
++Mechanical read-only inventory: economical model, sanity-check outputs.
++Bounded patch with clear acceptance: construction-capable model, relevant verification.
++Security/correctness/architecture or difficult refactor: stronger judgment capability,
++equally strong independent review where authorized. Unknown tier is invalid, never
++silently mapped to the cheapest tier.
++Shared ownership/integration/final user decision: orchestrator.
++Discover live model IDs and preserve user settings. Retry/escalation has a bounded
++budget and stop condition; unavailable delegation means direct bounded work.
+--- original/frugal-fable/scripts/scheduler.mjs
++++ revised/frugal-fable/scripts/scheduler.mjs
+@@ -0,0 +1,73 @@
++// Provider-neutral reservation scheduler. No provider calls, shell or filesystem access.
++const positive = (n,label) => {
++  if (!Number.isSafeInteger(n) || n<=0) throw new TypeError(label+" must be positive integer");
++  return n;
++};
++export function validateTasks(tasks) {
++  if (!Array.isArray(tasks)) throw new TypeError("tasks must be an array");
++  const seen=new Set();
++  for (const t of tasks) {
++    if (!t || !/^[a-z0-9][a-z0-9-]{0,63}$/.test(t.id) || seen.has(t.id)) throw new TypeError("invalid/duplicate task id");
++    seen.add(t.id); positive(t.upperBound,"upperBound");
++    if (!["economy","construction","judgment"].includes(t.tier)) throw new TypeError("unknown tier");
++    if (typeof t.scratch!=="string" || !/^\.frugal-fable\/[a-z0-9-]+\/[a-z0-9-]+\.(json|md|txt)$/.test(t.scratch)) throw new TypeError("unsafe scratch path");
++    if (typeof t.highStakes!=="boolean" || typeof t.requiresVerification!=="boolean") throw new TypeError("explicit gate booleans required");
++  }
++}
++export function evidenceGate(task,result) {
++  if (!result || result.path!==task.scratch || result.stoppedShort===true) return false;
++  if (task.requiresVerification && result.verifyPassed!==true) return false;
++  if (task.highStakes && result.reviewPassed!==true) return false;
++  return result.evidencePresent===true;
++}
++export function researchStatus(votes) {
++  if (!Array.isArray(votes) || votes.length!==2) return "unknown";
++  if (!votes.every(v=>v && ["support","refute","unknown"].includes(v.verdict) && typeof v.evidence==="string" && v.evidence.trim())) return "unknown";
++  if (votes.some(v=>v.verdict==="unknown")) return "unknown";
++  if (votes.every(v=>v.verdict==="support")) return "supported-pending-source-review";
++  if (votes.every(v=>v.verdict==="refute")) return "refuted";
++  return "disputed";
++}
++export async function runBounded(tasks,options,adapter) {
++  validateTasks(tasks);
++  const cap=positive(options.capTokens,"capTokens");
++  const maxCalls=positive(options.maxCalls,"maxCalls");
++  const concurrency=positive(options.maxConcurrency,"maxConcurrency");
++  const reserve=options.reserveTokens??0;
++  if (!Number.isSafeInteger(reserve) || reserve<0 || reserve>=cap) throw new TypeError("invalid reserve");
++  if (typeof adapter!=="function") throw new TypeError("explicit adapter required");
++  let spent=0,measured=0,estimated=0,reserved=0,calls=0,breached=false;
++  const results=[];
++  const active=new Set();
++  async function launch(task) {
++    let charge=task.upperBound,usageKnown=false;
++    try {
++      const response=await adapter(task,{maxTotalTokens:task.upperBound});
++      const usage=response?.totalTokens;
++      if (!Number.isSafeInteger(usage) || usage<0) throw new Error("missing/invalid total usage");
++      charge=usage; usageKnown=true;
++      if (usage>task.upperBound) {
++        breached=true;
++        results.push({id:task.id,status:"failed",reason:"adapter breached reservation",usage,usageBasis:"measured"});
++      } else {
++        results.push({id:task.id,status:evidenceGate(task,response.result)?"accepted":"rejected",usage,usageBasis:"measured",result:response.result});
++      }
++    } catch(error) {
++      results.push({id:task.id,status:"failed",reason:String(error),usage:charge,usageBasis:usageKnown?"measured":"estimated-reservation"});
++    } finally { reserved-=task.upperBound; spent+=charge; if(usageKnown)measured+=charge;else estimated+=charge; }
++  }
++  for (const task of tasks) {
++    while(active.size>=concurrency) await Promise.race(active);
++    if (breached || calls>=maxCalls || spent+reserved+task.upperBound>cap-reserve) {
++      results.push({id:task.id,status:"skipped",reason:breached?"adapter contract breached":"call or reservation limit"}); continue;
++    }
++    // Reserve synchronously BEFORE invoking the adapter or admitting another task.
++    reserved+=task.upperBound; calls++;
++    const pending=launch(task);
++    active.add(pending);
++    pending.then(()=>active.delete(pending));
++  }
++  await Promise.all(active);
++  return {accountedTokens:spent,measuredTotalTokens:measured,estimatedChargedTokens:estimated,accountingComplete:estimated===0,calls,breached,reserveTokens:reserve,results,
++          limitType:"admission reservations; provider ceiling requires enforcing adapter"};
++}

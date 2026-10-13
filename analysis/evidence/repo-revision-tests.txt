@@ -1,0 +1,61 @@
+test_bad_paths_refused_before_any_payload_written (test_evaluator.ArchiveTests.test_bad_paths_refused_before_any_payload_written) ... ok
+test_destination_symlink_refused (test_evaluator.ArchiveTests.test_destination_symlink_refused) ... ok
+test_duplicates_collisions_and_limits (test_evaluator.ArchiveTests.test_duplicates_collisions_and_limits) ... ok
+test_normal_zip_and_tar (test_evaluator.ArchiveTests.test_normal_zip_and_tar) ... ok
+test_tar_links_devices_traversal_refused (test_evaluator.ArchiveTests.test_tar_links_devices_traversal_refused) ... ok
+test_wrapper_stops_before_signature_checks (test_evaluator.ArchiveTests.test_wrapper_stops_before_signature_checks) ... skipped 'POSIX shell fixture; portable Python replacement has separate tests'
+test_zip_symlink_refused (test_evaluator.ArchiveTests.test_zip_symlink_refused) ... ok
+test_bad_lock_never_reports_clean (test_evaluator.DependencyTests.test_bad_lock_never_reports_clean) ... ok
+test_cargo_git_and_alternative_registry_not_queried_as_crates_io (test_evaluator.DependencyTests.test_cargo_git_and_alternative_registry_not_queried_as_crates_io) ... ok
+test_cargo_local_only_never_queries_osv (test_evaluator.DependencyTests.test_cargo_local_only_never_queries_osv) ... ok
+test_cargo_workspace_and_registry_same_name_are_distinct (test_evaluator.DependencyTests.test_cargo_workspace_and_registry_same_name_are_distinct) ... ok
+test_malformed_cargo_local_identity_or_source_fails (test_evaluator.DependencyTests.test_malformed_cargo_local_identity_or_source_fails) ... ok
+test_nested_cargo_local_packages_keep_manifest_provenance (test_evaluator.DependencyTests.test_nested_cargo_local_packages_keep_manifest_provenance) ... ok
+test_npm_parsing_and_spoofed_registry (test_evaluator.DependencyTests.test_npm_parsing_and_spoofed_registry) ... ok
+test_osv_failure_and_empty_results_are_distinct (test_evaluator.DependencyTests.test_osv_failure_and_empty_results_are_distinct) ... ok
+test_osv_partial_response_rejected (test_evaluator.DependencyTests.test_osv_partial_response_rejected) ... ok
+test_requirements_unresolved_preserved (test_evaluator.DependencyTests.test_requirements_unresolved_preserved) ... ok
+test_rust_and_python_locks (test_evaluator.DependencyTests.test_rust_and_python_locks) ... ok
+test_symlink_manifest_not_read (test_evaluator.DependencyTests.test_symlink_manifest_not_read) ... ok
+test_toml_missing_parser_explicit (test_evaluator.DependencyTests.test_toml_missing_parser_explicit) ... ok
+test_unsupported_locks_are_not_clean_or_missing (test_evaluator.DependencyTests.test_unsupported_locks_are_not_clean_or_missing) ... ok
+test_clone_isolated_from_global_filters_and_hooks (test_evaluator.FetchTests.test_clone_isolated_from_global_filters_and_hooks) ... skipped 'POSIX shell fixture; portable Python replacement has separate tests'
+test_invalid_repository_rejected_before_git (test_evaluator.FetchTests.test_invalid_repository_rejected_before_git) ... skipped 'POSIX shell fixture; portable Python replacement has separate tests'
+test_failed_api_has_explicit_warning (test_evaluator.MetadataTests.test_failed_api_has_explicit_warning) ... ok
+test_http_failure_not_empty_success (test_evaluator.MetadataTests.test_http_failure_not_empty_success) ... ok
+test_manifest_symlink_and_invalid_json_not_silently_ignored (test_evaluator.MetadataTests.test_manifest_symlink_and_invalid_json_not_silently_ignored) ... ok
+test_manifest_without_toml_parser_is_explicit_gap (test_evaluator.MetadataTests.test_manifest_without_toml_parser_is_explicit_gap) ... ok
+test_optional_missing_policy_not_api_failure (test_evaluator.MetadataTests.test_optional_missing_policy_not_api_failure) ... ok
+test_star_history_unchecked_has_no_api_claim_or_request (test_evaluator.MetadataTests.test_star_history_unchecked_has_no_api_claim_or_request) ... ok
+test_cli_exit_code_for_incomplete (test_evaluator.ScannerTests.test_cli_exit_code_for_incomplete) ... ok
+test_full_match_retention (test_evaluator.ScannerTests.test_full_match_retention) ... ok
+test_html_not_treated_as_noncode (test_evaluator.ScannerTests.test_html_not_treated_as_noncode) ... ok
+test_inert_malicious_patterns_never_run (test_evaluator.ScannerTests.test_inert_malicious_patterns_never_run) ... ok
+test_symlinks_large_binary_and_bad_encoding_incomplete (test_evaluator.ScannerTests.test_symlinks_large_binary_and_bad_encoding_incomplete) ... ok
+test_test_directory_build_files_retained (test_evaluator.ScannerTests.test_test_directory_build_files_retained) ... ok
+test_walk_read_and_count_failures_visible (test_evaluator.ScannerTests.test_walk_read_and_count_failures_visible) ... ok
+test_all_unknown (test_evaluator.ScoringTests.test_all_unknown) ... ok
+test_cli_and_markdown (test_evaluator.ScoringTests.test_cli_and_markdown) ... ok
+test_critical_overrides_good_score_and_missing_checks (test_evaluator.ScoringTests.test_critical_overrides_good_score_and_missing_checks) ... ok
+test_declined_artifact_is_unknown_not_failure_or_na (test_evaluator.ScoringTests.test_declined_artifact_is_unknown_not_failure_or_na) ... ok
+test_determinism_and_order_independence (test_evaluator.ScoringTests.test_determinism_and_order_independence) ... ok
+test_duplicate_json_keys_rejected (test_evaluator.ScoringTests.test_duplicate_json_keys_rejected) ... ok
+test_each_part_contributes_exact_weight (test_evaluator.ScoringTests.test_each_part_contributes_exact_weight) ... ok
+test_filmcraft_assessed_score_and_coverage (test_evaluator.ScoringTests.test_filmcraft_assessed_score_and_coverage) ... ok
+test_full_ledger_points_and_dimensions (test_evaluator.ScoringTests.test_full_ledger_points_and_dimensions) ... ok
+test_high_and_medium_caps (test_evaluator.ScoringTests.test_high_and_medium_caps) ... ok
+test_invalid_ledgers_rejected (test_evaluator.ScoringTests.test_invalid_ledgers_rejected) ... ok
+test_missing_is_unknown_not_pass (test_evaluator.ScoringTests.test_missing_is_unknown_not_pass) ... ok
+test_monotonic_scores_and_unknown_bounds (test_evaluator.ScoringTests.test_monotonic_scores_and_unknown_bounds) ... ok
+test_na_removes_only_source_artifact_weight (test_evaluator.ScoringTests.test_na_removes_only_source_artifact_weight) ... ok
+test_partial_failed_only_evidence_cannot_be_normalized_to_pass (test_evaluator.ScoringTests.test_partial_failed_only_evidence_cannot_be_normalized_to_pass) ... ok
+test_prior_scoring_version_not_silently_reinterpreted (test_evaluator.ScoringTests.test_prior_scoring_version_not_silently_reinterpreted) ... ok
+test_severity_floor_cannot_be_downgraded (test_evaluator.ScoringTests.test_severity_floor_cannot_be_downgraded) ... ok
+test_sparse_review_never_gets_unqualified_positive_verdict (test_evaluator.ScoringTests.test_sparse_review_never_gets_unqualified_positive_verdict) ... ok
+test_unknown_with_medium_keeps_adverse_verdict_and_cap (test_evaluator.ScoringTests.test_unknown_with_medium_keeps_adverse_verdict_and_cap) ... ok
+test_weights_total_100 (test_evaluator.ScoringTests.test_weights_total_100) ... ok
+
+----------------------------------------------------------------------
+Ran 56 tests in 4.660s
+
+OK (skipped=3)

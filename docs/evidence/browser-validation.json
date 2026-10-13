@@ -1,0 +1,33 @@
+{
+  "date": "2026-10-12",
+  "browser": "Chrome via chrome-devtools MCP",
+  "url": "Local report preview (path omitted)",
+  "desktop": {
+    "viewport": [
+      1366,
+      900
+    ],
+    "all_five_tabs_switched": true,
+    "sections_per_tab": 5,
+    "document_width": 1351,
+    "page_wide_horizontal_overflow": false
+  },
+  "mobile": {
+    "viewport": [
+      390,
+      844
+    ],
+    "all_five_tabs_switched": true,
+    "sections_per_tab": 5,
+    "document_width": 390,
+    "page_wide_horizontal_overflow": false
+  },
+  "keyboard_arrow_navigation": "ArrowRight from first tab focused and selected MCP evaluator",
+  "calculator": "Input 61 retained 100/100 score and showed 61 percent weighted coverage",
+  "source_link_expansion": true,
+  "broken_source_anchors": 0,
+  "external_asset_requests": 0,
+  "console_errors_or_warnings": 0,
+  "screenshot_pixel_inspection": "Not performed: requested screenshot save path was refused by tool workspace configuration; subsequent inline capture did not complete.",
+  "scope": "Rendered DOM, interface interactions and viewport geometry; no claim of screenshot-based visual review or accessibility certification."
+}

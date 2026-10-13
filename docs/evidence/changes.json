@@ -1,0 +1,197 @@
+[
+  {
+    "skill": "agent-skill-evaluator",
+    "path": "CHANGELOG.md",
+    "action": "changed"
+  },
+  {
+    "skill": "agent-skill-evaluator",
+    "path": "SKILL.md",
+    "action": "changed"
+  },
+  {
+    "skill": "agent-skill-evaluator",
+    "path": "references/attack_patterns.md",
+    "action": "changed"
+  },
+  {
+    "skill": "agent-skill-evaluator",
+    "path": "references/evidence-contract.md",
+    "action": "added"
+  },
+  {
+    "skill": "agent-skill-evaluator",
+    "path": "references/safe_skill_examples.md",
+    "action": "changed"
+  },
+  {
+    "skill": "agent-skill-evaluator",
+    "path": "references/scan-patterns.json",
+    "action": "added"
+  },
+  {
+    "skill": "agent-skill-evaluator",
+    "path": "scripts/safe_archive.py",
+    "action": "added"
+  },
+  {
+    "skill": "agent-skill-evaluator",
+    "path": "scripts/scan.py",
+    "action": "added"
+  },
+  {
+    "skill": "agent-skill-evaluator",
+    "path": "scripts/scan.sh",
+    "action": "changed"
+  },
+  {
+    "skill": "frugal-fable",
+    "path": "SKILL.md",
+    "action": "changed"
+  },
+  {
+    "skill": "frugal-fable",
+    "path": "references/budget-and-evidence.md",
+    "action": "added"
+  },
+  {
+    "skill": "frugal-fable",
+    "path": "references/codex-delegation.md",
+    "action": "changed"
+  },
+  {
+    "skill": "frugal-fable",
+    "path": "references/fanout-template.js",
+    "action": "removed"
+  },
+  {
+    "skill": "frugal-fable",
+    "path": "references/frugal-research.js",
+    "action": "removed"
+  },
+  {
+    "skill": "frugal-fable",
+    "path": "references/routing-cheatsheet.md",
+    "action": "changed"
+  },
+  {
+    "skill": "frugal-fable",
+    "path": "scripts/scheduler.mjs",
+    "action": "added"
+  },
+  {
+    "skill": "mcp-evaluator",
+    "path": "SKILL.md",
+    "action": "changed"
+  },
+  {
+    "skill": "mcp-evaluator",
+    "path": "references/evidence-contract.md",
+    "action": "added"
+  },
+  {
+    "skill": "mcp-evaluator",
+    "path": "references/mcp_security_patterns.md",
+    "action": "changed"
+  },
+  {
+    "skill": "mcp-evaluator",
+    "path": "references/safe_mcp_examples.md",
+    "action": "changed"
+  },
+  {
+    "skill": "mcp-evaluator",
+    "path": "references/scan-patterns.json",
+    "action": "added"
+  },
+  {
+    "skill": "mcp-evaluator",
+    "path": "scripts/boundaries.py",
+    "action": "added"
+  },
+  {
+    "skill": "mcp-evaluator",
+    "path": "scripts/safe_archive.py",
+    "action": "added"
+  },
+  {
+    "skill": "mcp-evaluator",
+    "path": "scripts/scan.py",
+    "action": "added"
+  },
+  {
+    "skill": "prd-creator",
+    "path": "SKILL.md",
+    "action": "changed"
+  },
+  {
+    "skill": "prd-creator",
+    "path": "references/output-examples.md",
+    "action": "changed"
+  },
+  {
+    "skill": "prd-creator",
+    "path": "references/prd-template.md",
+    "action": "changed"
+  },
+  {
+    "skill": "prd-creator",
+    "path": "references/questioning-patterns.md",
+    "action": "changed"
+  },
+  {
+    "skill": "prd-creator",
+    "path": "references/tool-integration.md",
+    "action": "changed"
+  },
+  {
+    "skill": "repo-evaluator",
+    "path": "CHANGELOG.md",
+    "action": "changed"
+  },
+  {
+    "skill": "repo-evaluator",
+    "path": "SKILL.md",
+    "action": "changed"
+  },
+  {
+    "skill": "repo-evaluator",
+    "path": "references/platform-and-scope.md",
+    "action": "added"
+  },
+  {
+    "skill": "repo-evaluator",
+    "path": "scripts/deps.py",
+    "action": "changed"
+  },
+  {
+    "skill": "repo-evaluator",
+    "path": "scripts/fetch.py",
+    "action": "added"
+  },
+  {
+    "skill": "repo-evaluator",
+    "path": "scripts/safe_archive.py",
+    "action": "changed"
+  },
+  {
+    "skill": "repo-evaluator",
+    "path": "scripts/scan.py",
+    "action": "changed"
+  },
+  {
+    "skill": "repo-evaluator",
+    "path": "scripts/score.py",
+    "action": "changed"
+  },
+  {
+    "skill": "repo-evaluator",
+    "path": "tests/VALIDATION.md",
+    "action": "changed"
+  },
+  {
+    "skill": "repo-evaluator",
+    "path": "tests/test_evaluator.py",
+    "action": "changed"
+  }
+]

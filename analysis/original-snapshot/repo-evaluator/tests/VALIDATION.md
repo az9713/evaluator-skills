@@ -1,0 +1,90 @@
+# Repo Evaluator 1.2.1 validation
+
+Validated locally on macOS on 2026-10-12. Rubric version: 1.1.0.
+
+## Reproduce
+
+From the repository root:
+
+```sh
+python3 -B -m unittest discover -s jeredblu-tools/skills/repo-evaluator/tests -v
+```
+
+## Results
+
+- Python 3.14.6: **56 tests passed** (including parameterized/subtest cases).
+- macOS system Python 3.9.6: **50 passed, 6 skipped**. TOML-success tests are
+  intentionally skipped because 3.9 lacks `tomllib`; the missing-parser warning
+  regression still runs and passes.
+- Shell syntax checks: `bash -n` on all three shell helpers passed.
+- Skill frontmatter/structure validator passed using an existing PyYAML-enabled
+  environment. No packages were installed. Version is under `metadata.version`.
+- Download ZIP: all 18 packaged files match the source byte-for-byte; all 56 tests
+  also passed from a fresh extraction using the archive validation helper.
+- Public HTTPS fetch smoke test succeeded against JeredBlu/jeredblu-marketplace
+  revision `8946664033ea20cc9b0ccd8b10c11b4a113c690b` without building/installing it.
+- JSON scan smoke: 32 text files read, five opaque/binary gaps, exit 3/incomplete.
+  Dependency smoke with `--offline`: explicitly incomplete, not a clean OSV result.
+- Historical rubric-1.0.0 CLI smoke withheld its score for unknown reputation
+  evidence; that behavior is superseded by the assessed-check policy below.
+- Saved FilmCraft evidence recalculated under rubric 1.1.0 without another source
+  audit or package download: 76.5 earned / 89 assessed ×100 = 86.0/100,
+  REVIEWED WITH LIMITATIONS, 89% weighted coverage; original evidence and results
+  preserved. 22 criteria and severity caps unchanged.
+- Optional package decline leaves artifact unknown rather than failed/N/A and
+  does not prevent a numeric assessed-check score. Sparse coverage stays
+  provisional; no-evidence reviews return null rather than inventing a number.
+
+## Properties exercised
+
+- Every check contributes its documented weight; all weights sum to 100.
+- Per-dimension totals, deterministic ordering, monotonic deductions, unknown
+  bounds, N/A denominator adjustment and severity caps/floors.
+- Invalid/duplicate IDs and JSON keys, score overrides, missing evidence and
+  incompatible severity/status combinations rejected.
+- Critical findings cannot be averaged away or downgraded below their rubric floor.
+- More than 40 matches retained in JSON; truncated text previews labeled.
+- Prompt-injection and code-risk fixtures produce leads without executing payloads.
+- HTML scripts, build files in test directories and agent configurations included.
+- Read failures, invalid encoding, symlinks, opaque files and size/count limits
+  remain explicit gaps rather than negative findings.
+- Unsupported lockfiles, malformed inputs, missing TOML support, OSV failure and
+  partial/paginated responses remain distinguishable from successful checks.
+- ZIP/TAR traversal, absolute/device paths, symbolic/hard links, special files,
+  aliases/collisions and oversized archives rejected before payload extraction.
+- Normal inert archives extract without executable bits; the shell artifact
+  wrapper stops on blocked archives before signature inspection.
+- Git fetch does not inherit global filter configuration, templates or hooks.
+- Metadata lookup failures report NOT CHECKED rather than absence of evidence.
+
+## Limits
+
+These are regression and plumbing tests, **not a malware-detection benchmark**.
+They do not establish recall/precision on adversarial real repositories, empirical
+calibration of weights, model consistency, or security certification. No target
+repository code or fixture payload was executed. Live OSV failure handling uses
+mocked responses; notarization, DMG/PKG parsers and actual release/source equivalence
+were not validated against a corpus of production artifacts. No Jev call or other
+hosted semantic-review integration was introduced. Publication status is reported separately; validation does not itself publish a release.
+
+## Field-test fixes verified in 1.2.1
+
+- Re-read FilmCraft v0.6.0 preserved Cargo.lock from the exact audited revision:
+  701 records = 652 crates.io entries + 49 local/workspace/path entries.
+  The corrected helper queried only the 652 registry packages; the 49 local
+  packages are separately inventoried with their manifest paths.
+- Live OSV rerun completed for those 652 candidates. The helper still reports
+  incomplete scope for unparsed manifests/local source review, not a false clean
+  bill of health. This is not a target/feature-resolved advisory assessment.
+- Local packages sharing a name/version with a registry package, all-local
+  projects, Git/private/spoofed registries, malformed entries and nested lockfile
+  provenance have regression coverage.
+- Star timing explicitly says NOT CHECKED, without making an API-availability
+  claim or performing an unreported request. No star-history evidence informs
+  the FilmCraft score.
+- Saved FilmCraft evidence still yields 86/100 on assessed checks, 89% weighted
+  coverage under unchanged rubric 1.1.0. No package downloaded or opened.
+
+Target/feature-specific Cargo advisory applicability still requires manual
+review. The two identified helper bugs are fixed; this does not claim exhaustive
+vulnerability coverage or empirical scoring calibration.

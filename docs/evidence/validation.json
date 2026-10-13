@@ -1,0 +1,96 @@
+{
+  "date": "2026-10-12",
+  "platform": "Windows",
+  "python": "3.13",
+  "tests": {
+    "repo-revision": {
+      "command": [
+        "python",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "analysis/revised-skills/repo-evaluator/tests",
+        "-v"
+      ],
+      "exit_code": 0,
+      "ran": 56,
+      "skipped": 3,
+      "log": "repo-revision-tests.txt"
+    },
+    "revision": {
+      "command": [
+        "python",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "analysis/tests",
+        "-v"
+      ],
+      "exit_code": 0,
+      "ran": 15,
+      "skipped": 0,
+      "log": "revision-tests.txt"
+    },
+    "scheduler": {
+      "command": [
+        "node",
+        "analysis/tests/test_scheduler.mjs"
+      ],
+      "exit_code": 0,
+      "ran": 10,
+      "skipped": 0,
+      "log": "scheduler-tests.txt"
+    }
+  },
+  "skill_frontmatter": [
+    {
+      "skill": "agent-skill-evaluator",
+      "exit_code": 0,
+      "output": "Structure valid; not behavior certification.\n"
+    },
+    {
+      "skill": "frugal-fable",
+      "exit_code": 0,
+      "output": "Structure valid; not behavior certification.\n"
+    },
+    {
+      "skill": "mcp-evaluator",
+      "exit_code": 0,
+      "output": "Structure valid; not behavior certification.\n"
+    },
+    {
+      "skill": "prd-creator",
+      "exit_code": 0,
+      "output": "Structure valid; not behavior certification.\n"
+    },
+    {
+      "skill": "repo-evaluator",
+      "exit_code": 0,
+      "output": "Structure valid; not behavior certification.\n"
+    }
+  ],
+  "syntax": [
+    "repo-evaluator/scripts/deps.py",
+    "repo-evaluator/scripts/fetch.py",
+    "repo-evaluator/scripts/repo_meta.py",
+    "repo-evaluator/scripts/safe_archive.py",
+    "repo-evaluator/scripts/scan.py",
+    "repo-evaluator/scripts/score.py",
+    "repo-evaluator/tests/test_evaluator.py",
+    "mcp-evaluator/scripts/boundaries.py",
+    "mcp-evaluator/scripts/safe_archive.py",
+    "mcp-evaluator/scripts/scan.py",
+    "agent-skill-evaluator/scripts/safe_archive.py",
+    "agent-skill-evaluator/scripts/scan.py"
+  ],
+  "all_passed": true,
+  "limits": [
+    "No live provider adapter, cross-CLI run, hosted MCP deployment or target installation tested.",
+    "Legacy artifact/metadata sampling is documented, not comprehensively rewritten.",
+    "Tests do not establish detection accuracy, empirical scoring calibration or model quality."
+  ]
+}

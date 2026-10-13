@@ -1,0 +1,218 @@
+[
+  {
+    "path": "agent-skill-evaluator/CHANGELOG.md",
+    "bytes": 8391,
+    "lines": 136,
+    "sha256": "b21c08996cd06883467fe5aacc014c290679f858f30c085b900ed87696aee695"
+  },
+  {
+    "path": "agent-skill-evaluator/references/attack_patterns.md",
+    "bytes": 10366,
+    "lines": 348,
+    "sha256": "42ddfb46b65bdbd68df3b35b0d8e5124409636dc599dc82d5837003eff0d1190"
+  },
+  {
+    "path": "agent-skill-evaluator/references/safe_skill_examples.md",
+    "bytes": 8667,
+    "lines": 300,
+    "sha256": "c7b467c744b6857709c41dab0f7f8648525425f0145ade82da4da598f4d8e161"
+  },
+  {
+    "path": "agent-skill-evaluator/scripts/scan.sh",
+    "bytes": 6215,
+    "lines": 120,
+    "sha256": "37259a34fafc5be801c876cd9c2082c6b1d1fb8fd70f4a3816fc3afcd2ac7a57"
+  },
+  {
+    "path": "agent-skill-evaluator/SKILL.md",
+    "bytes": 29236,
+    "lines": 490,
+    "sha256": "9836ffae1a2826ee55fa713959519b6e921f4a1848230a7806dc9b61b41c3273"
+  },
+  {
+    "path": "frugal-fable/references/codex-delegation.md",
+    "bytes": 3805,
+    "lines": 93,
+    "sha256": "802b28e7dc6da5b21a1f62f3a621cb03a2b8ed0b39a7a377489bf799aaaeb8d4"
+  },
+  {
+    "path": "frugal-fable/references/fanout-template.js",
+    "bytes": 6246,
+    "lines": 127,
+    "sha256": "28602397b5a3d61c25d56ff201abfd132a94797c66f51007ede9be70bcbe922d"
+  },
+  {
+    "path": "frugal-fable/references/frugal-research.js",
+    "bytes": 12668,
+    "lines": 194,
+    "sha256": "f38d68f4bee2247b19936611e5c586ee97044613df264b273b3dd0e3586368c9"
+  },
+  {
+    "path": "frugal-fable/references/routing-cheatsheet.md",
+    "bytes": 1891,
+    "lines": 35,
+    "sha256": "88da1683ef68c1efb8a6adc9a6719b34ac3d12b39b0f780011e6ccf6a50c2cd5"
+  },
+  {
+    "path": "frugal-fable/SKILL.md",
+    "bytes": 11427,
+    "lines": 167,
+    "sha256": "a5b27756ef13031722f44b2a91a1a0777b0c8546fe2c2f943999b1106110dab5"
+  },
+  {
+    "path": "mcp-evaluator/references/mcp_security_patterns.md",
+    "bytes": 8744,
+    "lines": 319,
+    "sha256": "47d7cadd2c62f11c9c675363362a970ab58a590e4033d896353d7420c6f8c7c3"
+  },
+  {
+    "path": "mcp-evaluator/references/safe_mcp_examples.md",
+    "bytes": 12895,
+    "lines": 456,
+    "sha256": "a64fe20c770def4e4dde2164dac9b2a8d0d1c53f339d8488db4fafa99efc456a"
+  },
+  {
+    "path": "mcp-evaluator/SKILL.md",
+    "bytes": 11712,
+    "lines": 290,
+    "sha256": "879aa821ffe6ed1f46a25d53d305c917083541fdd12701f0008471325c5214f3"
+  },
+  {
+    "path": "prd-creator/references/output-examples.md",
+    "bytes": 10135,
+    "lines": 435,
+    "sha256": "2c4c13ef8a1ba7afe41e01d9504b78565057a1b15b06686f04549e95f7a28ccc"
+  },
+  {
+    "path": "prd-creator/references/prd-template.md",
+    "bytes": 11180,
+    "lines": 481,
+    "sha256": "c2afdef27430eb0906fb96dd404e8aa423d2e43d898a62366f03e9921fe07dec"
+  },
+  {
+    "path": "prd-creator/references/questioning-patterns.md",
+    "bytes": 11018,
+    "lines": 341,
+    "sha256": "0cc19177cec4a270fc7cbaf20ac80367c26a45091ebd54cbe12c60a06b1f405e"
+  },
+  {
+    "path": "prd-creator/references/tool-integration.md",
+    "bytes": 6967,
+    "lines": 261,
+    "sha256": "5c4d2f4167956118696f32c67b41dcec878ca3b0bdfe6c85394e22e225588ff1"
+  },
+  {
+    "path": "prd-creator/SKILL.md",
+    "bytes": 15432,
+    "lines": 171,
+    "sha256": "88df256d062b2cf7cd6037792d8aaf0581ee1c9c9ef7aa723e98c93a4920c8d1"
+  },
+  {
+    "path": "repo-evaluator/.gitignore",
+    "bytes": 19,
+    "lines": 2,
+    "sha256": "862263fa1f46c20f0d1e4dac5ffcc75abd55c08211b2c3864c5f8764b9d87793"
+  },
+  {
+    "path": "repo-evaluator/CHANGELOG.md",
+    "bytes": 3754,
+    "lines": 32,
+    "sha256": "1776a743550719e465ede678d65f4e23cd6cde685dbbe88b2ab31353dd972945"
+  },
+  {
+    "path": "repo-evaluator/references/calibration.md",
+    "bytes": 3903,
+    "lines": 43,
+    "sha256": "62ea37843b4689473dd917e100fdf33cb8cf699751f125b5aa8f8717214a9884"
+  },
+  {
+    "path": "repo-evaluator/references/red_flags.md",
+    "bytes": 8983,
+    "lines": 78,
+    "sha256": "cbe566397afdf4815cb3117a6123e04b25838c0f9a5731b277ee01bc9ecae303"
+  },
+  {
+    "path": "repo-evaluator/references/rubric-v1.json",
+    "bytes": 11524,
+    "lines": 312,
+    "sha256": "e93305b39c16258e3abfc3ed4ff405a88fdc99d82a2dc040437d4e0c5437766e"
+  },
+  {
+    "path": "repo-evaluator/references/scan-patterns.json",
+    "bytes": 6453,
+    "lines": 116,
+    "sha256": "8509149dc4b4c5064dde83b4c90652f6f77287664f59a0cd2c9b64e3ed425ad6"
+  },
+  {
+    "path": "repo-evaluator/references/scoring.md",
+    "bytes": 9635,
+    "lines": 178,
+    "sha256": "ea09cf7a7323a5e225e5214e6e37ae33a9f487339c94c9d6ba72b8d087820562"
+  },
+  {
+    "path": "repo-evaluator/scripts/deps.py",
+    "bytes": 14193,
+    "lines": 263,
+    "sha256": "412118c23331d811e8788e065d033e80d5bb59b1077ef70a8293777dca90ea0e"
+  },
+  {
+    "path": "repo-evaluator/scripts/fetch.sh",
+    "bytes": 2970,
+    "lines": 65,
+    "sha256": "b7baec30f2370fddafeade29cbee7040c8dfbb49cf169f2247334587776153cb"
+  },
+  {
+    "path": "repo-evaluator/scripts/inspect_artifact.sh",
+    "bytes": 6073,
+    "lines": 106,
+    "sha256": "69e09a74c4abcd3590329cbf15e3707d6f24481fd575149665581ed34a88866a"
+  },
+  {
+    "path": "repo-evaluator/scripts/repo_meta.py",
+    "bytes": 12624,
+    "lines": 254,
+    "sha256": "d60fb808deb817eb6cc936fa23c0ea6a0c74104606bd1d43be322dac6f9aefb1"
+  },
+  {
+    "path": "repo-evaluator/scripts/safe_archive.py",
+    "bytes": 5746,
+    "lines": 123,
+    "sha256": "5403b01d6bd34fe88b998134da1fe449298808fd22eb10e5b62c3d2dd9796058"
+  },
+  {
+    "path": "repo-evaluator/scripts/scan.py",
+    "bytes": 8810,
+    "lines": 157,
+    "sha256": "6406724d4aa80db870e9cf40a4e84a3806df78d3341ba9d714096d507ba133bf"
+  },
+  {
+    "path": "repo-evaluator/scripts/scan.sh",
+    "bytes": 178,
+    "lines": 4,
+    "sha256": "4b479886ea2e09145227c33723b7ea3476ef5e7a2958d189c97dedcc3d38cc55"
+  },
+  {
+    "path": "repo-evaluator/scripts/score.py",
+    "bytes": 12862,
+    "lines": 227,
+    "sha256": "4f036e38560bd35a8343f37a8005eb1414afce00bfe80fd7abe5351e78bc88cb"
+  },
+  {
+    "path": "repo-evaluator/SKILL.md",
+    "bytes": 18391,
+    "lines": 147,
+    "sha256": "193f87765a64c6ce3dd047c2b6d840fcbdcb1b50986611d4c760a7f7b59f688f"
+  },
+  {
+    "path": "repo-evaluator/tests/test_evaluator.py",
+    "bytes": 30181,
+    "lines": 553,
+    "sha256": "c77533eb98a57be937bdbcb1c067b72d9b3e86d84b235d7502dd52ff343128c6"
+  },
+  {
+    "path": "repo-evaluator/tests/VALIDATION.md",
+    "bytes": 5315,
+    "lines": 90,
+    "sha256": "aa00fbf3771f31f1b4f94698b8da8c9f36024c204f8ce60bedca766d0bc004c2"
+  }
+]

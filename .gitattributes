@@ -1,0 +1,9 @@
+* -text
+analysis/original-snapshot/** -whitespace
+analysis/revised-skills/** -whitespace
+jeredblu-tools/skills/** -whitespace
+analysis/diffs/** -whitespace
+docs/diffs/** -whitespace
+docs/revised-skills/** -whitespace
+*.html -whitespace
+*.md -whitespace

@@ -1,0 +1,28 @@
+{
+  "date": "2026-10-12",
+  "scope": "Published repository, generated report, evidence logs, download archives, preview metadata, package maintainer display fields and reachable Git history.",
+  "removed": [
+    "Collapsed shell-error profile paths",
+    "Local user and filesystem identifiers",
+    "Personal timezone",
+    "Exact machine-build and compiler fingerprints",
+    "Standalone maintainer account display name",
+    "Earlier public commit identifiers in evidence",
+    "Workstation-specific ZIP timestamps and extra metadata"
+  ],
+  "retained_at_user_request": [
+    "Email addresses",
+    "Public upstream attribution",
+    "Functional GitHub and Pages URLs",
+    "Public source names and source-review dates"
+  ],
+  "privacy_regressions_passed": 3,
+  "preview_png_metadata_chunks": [
+    "IHDR",
+    "IDAT",
+    "IEND"
+  ],
+  "original_source_hashes_preserved": true,
+  "history_policy": "Replace reachable publication history with a sanitized root snapshot; generic Maintainer display names, retained email and UTC commit metadata.",
+  "limit": "A Git rewrite cannot guarantee removal of third-party clones or provider-retained unreachable objects and caches."
+}

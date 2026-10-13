@@ -1,0 +1,20 @@
+test_child_accepted_sibling_prefix_refused (test_revisions.BoundaryTests.test_child_accepted_sibling_prefix_refused) ... ok
+test_numeric_edge_cases (test_revisions.BoundaryTests.test_numeric_edge_cases) ... ok
+test_symlink_escape_refused (test_revisions.BoundaryTests.test_symlink_escape_refused) ... ok
+test_both_archive_helpers_refuse_traversal_before_writing (test_revisions.EvaluatorTests.test_both_archive_helpers_refuse_traversal_before_writing) ... ok
+test_both_scanners_preserve_all_leads_and_instruction_unicode (test_revisions.EvaluatorTests.test_both_scanners_preserve_all_leads_and_instruction_unicode) ... ok
+test_dependency_output_omits_script_url_and_requirement_credentials (test_revisions.EvaluatorTests.test_dependency_output_omits_script_url_and_requirement_credentials) ... ok
+test_source_secrets_not_emitted_and_env_files_not_opened (test_revisions.EvaluatorTests.test_source_secrets_not_emitted_and_env_files_not_opened) ... ok
+test_swift_url_secrets_never_emitted_or_queried (test_revisions.EvaluatorTests.test_swift_url_secrets_never_emitted_or_queried) ... ok
+test_unreadable_and_opaque_never_clean (test_revisions.EvaluatorTests.test_unreadable_and_opaque_never_clean) ... ok
+test_windows_ci_agent_inventory_uses_portable_paths (test_revisions.EvaluatorTests.test_windows_ci_agent_inventory_uses_portable_paths) ... ok
+test_windows_junction_never_traversed (test_revisions.EvaluatorTests.test_windows_junction_never_traversed) ... ok
+test_bad_depth_ref_do_not_spawn (test_revisions.PortableFetchTests.test_bad_depth_ref_do_not_spawn) ... ok
+test_environment_isolated (test_revisions.PortableFetchTests.test_environment_isolated) ... ok
+test_exact_origin_validation (test_revisions.PortableFetchTests.test_exact_origin_validation) ... ok
+test_mocked_fetch_arguments_and_receipt (test_revisions.PortableFetchTests.test_mocked_fetch_arguments_and_receipt) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 2.320s
+
+OK
